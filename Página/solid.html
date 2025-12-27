@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SOLID - Masterclass Arquitectura</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+            colors: {
+              brand: { dark: "#0f172a", card: "#1e293b", accent: "#3b82f6" },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .accordion-content {
+        transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+      }
+      .accordion-content.active {
+        max-height: 2000px;
+        opacity: 1;
+      }
+      .code-display { display: none; }
+      .code-display.active { display: block; }
+      .kwd { color: #ff7b72; }
+      .cls { color: #79c0ff; }
+      .str { color: #a5d6ff; }
+      .mtd { color: #d2a8ff; }
+      .cmt { color: #8b949e; font-style: italic; }
+    </style>
+  </head>
+  <body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+    
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-700">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-cube text-blue-500 text-xl"></i>
+            <span class="font-bold text-xl tracking-tight">Java Architecture</span>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a href="intro_interfaces.html" class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">0. Interfaces</a>
+              <a href="solid.html" class="bg-slate-800 text-white px-3 py-2 rounded-md text-sm font-medium border border-blue-500/50">1. SOLID</a>
+              <a href="patterns.html" class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">2. Patrones</a>
+              <a href="hexagonal.html" class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">3. Hexagonal</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-5xl">
+
+      <!-- Learning Path -->
+      <div class="mb-12">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 relative">
+          <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-slate-700 -z-10 transform -translate-y-1/2 rounded"></div>
+          <div class="flex flex-col items-center bg-slate-900 px-4 z-10 opacity-50">
+            <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center border-4 border-slate-900"><span class="font-bold text-slate-400">0</span></div>
+            <div class="text-center mt-2"><h3 class="font-semibold text-slate-300">Interfaces</h3></div>
+          </div>
+          <div class="flex flex-col items-center bg-slate-900 px-4 z-10">
+            <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center border-4 border-slate-900 shadow-[0_0_15px_rgba(59,130,246,0.5)]"><span class="font-bold text-white">1</span></div>
+            <div class="text-center mt-2"><h3 class="font-bold text-blue-400">SOLID</h3><p class="text-xs text-slate-400">Fundamentos</p></div>
+          </div>
+          <div class="flex flex-col items-center bg-slate-900 px-4 z-10 opacity-50">
+            <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center border-4 border-slate-900"><span class="font-bold text-slate-400">2</span></div>
+            <div class="text-center mt-2"><h3 class="font-semibold text-slate-300">Patrones</h3></div>
+          </div>
+          <div class="flex flex-col items-center bg-slate-900 px-4 z-10 opacity-50">
+             <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center border-4 border-slate-900"><span class="font-bold text-slate-400">3</span></div>
+             <div class="text-center mt-2"><h3 class="font-semibold text-slate-300">Hexagonal</h3></div>
+          </div>
+        </div>
+      </div>
+
+      <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-4">Principios SOLID</h1>
+        <p class="text-lg text-slate-400">Reglas Universales para software mantenible.</p>
+      </header>
+
+      <div class="space-y-6">
+        
+        <!-- SRP -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden border border-slate-700">
+          <button class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-700/50 transition-colors" onclick="toggleAccordion(this)">
+            <div class="flex items-center gap-4">
+              <span class="text-3xl font-black text-blue-500">S</span>
+              <span class="text-xl font-bold">Single Responsibility</span>
+            </div>
+            <i class="fas fa-chevron-down text-slate-500 transition-transform duration-300"></i>
+          </button>
+          <div class="accordion-content">
+            <div class="p-6 border-t border-slate-700 space-y-6">
+              <div class="bg-slate-900/50 p-4 rounded-lg border-l-4 border-blue-500">
+                <p class="text-lg italic">"Una clase debe tener una, y solo una, razón para cambiar."</p>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div class="bg-slate-700/30 p-4 rounded-lg">
+                    <h4 class="font-bold text-indigo-400 mb-2"><i class="fas fa-brain mr-2"></i>Profundización</h4>
+                    <p class="text-slate-300 text-sm">No mezcles lógica de negocio con infraestructura. Si cambia la base de datos, tu lógica de negocio no debería tocarse.</p>
+                 </div>
+                 <div class="bg-slate-700/30 p-4 rounded-lg">
+                    <h4 class="font-bold text-amber-400 mb-2"><i class="fas fa-lightbulb mr-2"></i>Analogía: El Chef</h4>
+                    <p class="text-slate-300 text-sm">Un chef cocina. No repara las tuberías del gas. Si hace ambas cosas, ¡se le quema la cena!</p>
+                 </div>
+              </div>
+               <!-- Tip Box -->
+              <div class="bg-emerald-900/20 border border-emerald-500/30 p-4 rounded-lg flex gap-3">
+                <i class="fas fa-graduation-cap text-emerald-400 text-xl mt-1"></i>
+                <div>
+                  <h4 class="font-bold text-emerald-400">Tip para el Aprendiz</h4>
+                   <p class="text-sm text-emerald-100/80">Si describes tu clase con una "Y" ("Valida Y guarda"), está haciendo demasiado.</p>
+                </div>
+              </div>
+
+               <div class="code-playground bg-[#0d1117] rounded-lg border border-slate-700 overflow-hidden">
+                <div class="flex border-b border-slate-700 bg-slate-800/50">
+                  <button class="tab-btn px-4 py-2 text-sm font-medium text-red-400 border-r border-slate-700 hover:bg-slate-800 active" onclick="switchTab(this, 'srp-bad')">❌ Dios</button>
+                  <button class="tab-btn px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-slate-800" onclick="switchTab(this, 'srp-good')">✅ Separado</button>
+                </div>
+                <div id="srp-bad" class="code-display active p-4 overflow-x-auto text-sm font-mono">
+<pre><span class="cmt">// ❌ PAQUETE: com.monolith.service</span>
+<span class="kwd">import</span> java.sql.*;
+
+<span class="kwd">public class</span> <span class="cls">OrderService</span> {
+    <span class="kwd">public void</span> <span class="mtd">processOrder</span>(<span class="cls">int</span> id) {
+        <span class="cmt">// 1. NEGOCIO: Cálculos</span>
+        <span class="cls">double</span> total = 100.0 * 1.21;
+
+        <span class="cmt">// 2. INFRA: Guardar en BD (Acoplado a JDBC)</span>
+        <span class="kwd">try</span> (<span class="cls">Connection</span> c = <span class="cls">DriverManager</span>.getConnection(<span class="str">"jdbc:mysql..."</span>)) {
+            c.createStatement().execute(<span class="str">"UPDATE orders..."</span>);
+        } <span class="kwd">catch</span> (<span class="cls">SQLException</span> e) { e.printStackTrace(); }
+
+        <span class="cmt">// 3. INFRA: Enviar Email (Acoplado a implementación)</span>
+        <span class="cls">System</span>.out.println(<span class="str">"Enviando correo..."</span>);
+    }
+}</pre>
+                </div>
+                <div id="srp-good" class="code-display p-4 overflow-x-auto text-sm font-mono">
+<pre><span class="cmt">// ✅ PAQUETE: com.clean.usecase</span>
+<span class="cmt">// Solo orquesta. Delega los detalles feos a interfaces.</span>
+
+<span class="kwd">public class</span> <span class="cls">ProcessOrderUseCase</span> {
+    <span class="kwd">private final</span> <span class="cls">OrderRepository</span> repo;
+    <span class="kwd">private final</span> <span class="cls">Notifier</span> notifier;
+    
+    <span class="kwd">public</span> <span class="mtd">ProcessOrderUseCase</span>(<span class="cls">OrderRepository</span> r, <span class="cls">Notifier</span> n) {
+        <span class="kwd">this</span>.repo = r;
+        <span class="kwd">this</span>.notifier = n;
+    }
+
+    <span class="kwd">public void</span> <span class="mtd">execute</span>(<span class="cls">Order</span> order) {
+        order.calculateTotal();      <span class="cmt">// Responsabilidad del Dominio</span>
+        repo.save(order);            <span class="cmt">// Responsabilidad de Infra</span>
+        notifier.sendReceipt(order); <span class="cmt">// Responsabilidad de Notificación</span>
+    }
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OCP -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden border border-slate-700">
+          <button class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-700/50 transition-colors" onclick="toggleAccordion(this)">
+            <div class="flex items-center gap-4">
+              <span class="text-3xl font-black text-blue-500">O</span>
+              <span class="text-xl font-bold">Open/Closed</span>
+            </div>
+            <i class="fas fa-chevron-down text-slate-500 transition-transform duration-300"></i>
+          </button>
+          <div class="accordion-content">
+            <div class="p-6 border-t border-slate-700 space-y-6">
+              <div class="bg-slate-900/50 p-4 rounded-lg border-l-4 border-blue-500"">
+                <p class="text-lg italic">"Abierto a extensión, cerrado a modificación."</p>
+              </div>
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div class="bg-slate-700/30 p-4 rounded-lg">
+                    <h4 class="font-bold text-indigo-400 mb-2">Profundización</h4>
+                    <p class="text-slate-300 text-sm">Debes poder añadir nueva funcionalidad (nuevo método de pago) creando clases nuevas, NO editando un `switch/if` gigante existente.</p>
+                 </div>
+                 <div class="bg-slate-700/30 p-4 rounded-lg">
+                    <h4 class="font-bold text-amber-400 mb-2">Analogía: La Consola</h4>
+                    <p class="text-slate-300 text-sm">Para jugar un juego nuevo, compras un cartucho (Extensión). No necesitas desarmar y soldar la consola (Modificación).</p>
+                 </div>
+              </div>
+
+               <div class="code-playground bg-[#0d1117] rounded-lg border border-slate-700 overflow-hidden">
+                <div class="flex border-b border-slate-700 bg-slate-800/50">
+                  <button class="tab-btn px-4 py-2 text-sm font-medium text-red-400 border-r border-slate-700 hover:bg-slate-800 active" onclick="switchTab(this, 'ocp-bad')">❌ If-Else</button>
+                  <button class="tab-btn px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-slate-800" onclick="switchTab(this, 'ocp-good')">✅ Polimorfismo</button>
+                </div>
+                 <div id="ocp-bad" class="code-display active p-4 overflow-x-auto text-sm font-mono">
+<pre><span class="cmt">// ❌ PAQUETE: com.bad.notification</span>
+<span class="kwd">public class</span> <span class="cls">NotificationSender</span> {
+    <span class="kwd">public void</span> <span class="mtd">send</span>(<span class="cls">String</span> type, <span class="cls">String</span> message) {
+        <span class="cmt">// Si pidiéramos 'WhatsApp', ¡toca abrir y modificar esta clase!</span>
+        <span class="kwd">if</span> (type.equals(<span class="str">"EMAIL"</span>)) {
+            <span class="cmt">// logica email...</span>
+        } <span class="kwd">else if</span> (type.equals(<span class="str">"SMS"</span>)) {
+            <span class="cmt">// logica sms...</span>
+        }
+    }
+}</pre>
+                </div>
+                <div id="ocp-good" class="code-display p-4 overflow-x-auto text-sm font-mono">
+<pre><span class="cmt">// ✅ PAQUETE: com.good.notification</span>
+<span class="cmt">// Definimos el contrato. Nuevos canales = Nuevas clases (Extensión).</span>
+
+<span class="kwd">public interface</span> <span class="cls">NotificationChannel</span> {
+    <span class="kwd">void</span> <span class="mtd">send</span>(<span class="cls">String</span> msg);
+}
+
+<span class="kwd">public class</span> <span class="cls">EmailChannel</span> <span class="kwd">implements</span> <span class="cls">NotificationChannel</span> {
+    <span class="kwd">public void</span> <span class="mtd">send</span>(<span class="cls">String</span> msg) { <span class="cmt">/* SMTP logic */</span> }
+}
+
+<span class="kwd">public class</span> <span class="cls">WhatsAppChannel</span> <span class="kwd">implements</span> <span class="cls">NotificationChannel</span> {
+    <span class="kwd">public void</span> <span class="mtd">send</span>(<span class="cls">String</span> msg) { <span class="cmt">/* API logic */</span> }
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LSP -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden border border-slate-700">
+           <button class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-700/50 transition-colors" onclick="toggleAccordion(this)">
+            <div class="flex items-center gap-4">
+              <span class="text-3xl font-black text-blue-500">L</span>
+              <span class="text-xl font-bold">Liskov Substitution</span>
+            </div>
+            <i class="fas fa-chevron-down text-slate-500 transition-transform duration-300"></i>
+          </button>
+          <div class="accordion-content">
+            <div class="p-6 border-t border-slate-700 space-y-6">
+              <div class="bg-slate-900/50 p-4 rounded-lg border-l-4 border-blue-500">
+                <p class="text-lg italic">"Las subclases deben ser sustituibles por sus padres sin romper nada."</p>
+              </div>
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div class="bg-slate-700/30 p-4 rounded-lg">
+                    <h4 class="font-bold text-indigo-400 mb-2">Profundización</h4>
+                    <p class="text-slate-300 text-sm">Herencia no es solo reutilizar código. Es una relación "ES-UN". Si sobrescribes un método para lanzar `UnsupportedOperationException`, violas LSP.</p>
+                 </div>
+                 <div class="bg-slate-700/30 p-4 rounded-lg">
+                    <h4 class="font-bold text-amber-400 mb-2">Analogía: El Pato</h4>
+                    <p class="text-slate-300 text-sm">Si parece pato y hace cuack, pero necesita baterías... NO es un pato, es un juguete. No puedes tratarlo igual.</p>
+                 </div>
+              </div>
+
+               <div class="code-playground bg-[#0d1117] rounded-lg border border-slate-700 overflow-hidden">
+                <div class="flex border-b border-slate-700 bg-slate-800/50">
+                   <button class="tab-btn px-4 py-2 text-sm font-medium text-red-400 border-r border-slate-700 hover:bg-slate-800 active" onclick="switchTab(this, 'lsp-bad')">❌ Falsa Herencia</button>
+                   <button class="tab-btn px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-slate-800" onclick="switchTab(this, 'lsp-good')">✅ Composición</button>
+                </div>
+                 <div id="lsp-bad" class="code-display active p-4 overflow-x-auto text-sm font-mono">
+<pre><span class="cmt">// ❌ PAQUETE: com.bad.payments</span>
+<span class="kwd">class</span> <span class="cls">TarjetaCredito</span> {
+    <span class="kwd">void</span> <span class="mtd">pagarCuotas</span>() { <span class="cmt">/* ... */</span> }
+}
+
+<span class="cmt">// El hijo NO cumple el contrato del padre. Sorpresa desagradable.</span>
+<span class="kwd">class</span> <span class="cls">TarjetaDebito</span> <span class="kwd">extends</span> <span class="cls">TarjetaCredito</span> {
+    <span class="kwd">@Override</span>
+    <span class="kwd">void</span> <span class="mtd">pagarCuotas</span>() {
+        <span class="kwd">throw new</span> <span class="cls">UnsupportedOperationException</span>(<span class="str">"¡Débito no tiene cuotas!"</span>);
+    }
+}</pre>
+                </div>
+                <div id="lsp-good" class="code-display p-4 overflow-x-auto text-sm font-mono">
+<pre><span class="cmt">// ✅ PAQUETE: com.good.payments</span>
+<span class="cmt">// Segregamos por capacidades. No forzamos herencia incorrecta.</span>
+
+<span class="kwd">interface</span> <span class="cls">InstrumentoPago</span> { <span class="kwd">void</span> <span class="mtd">pagar</span>(); }
+<span class="kwd">interface</span> <span class="cls">ConCuotas</span> { <span class="kwd">void</span> <span class="mtd">pagarCuotas</span>(); }
+
+<span class="kwd">class</span> <span class="cls">TarjetaDebito</span> <span class="kwd">implements</span> <span class="cls">InstrumentoPago</span> { <span class="cmt">/* Solo pagar */</span> }
+<span class="kwd">class</span> <span class="cls">TarjetaCredito</span> <span class="kwd">implements</span> <span class="cls">InstrumentoPago</span>, <span class="cls">ConCuotas</span> { <span class="cmt">/* Ambas */</span> }</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ISP -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden border border-slate-700">
+           <button class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-700/50 transition-colors" onclick="toggleAccordion(this)">
+            <div class="flex items-center gap-4">
+              <span class="text-3xl font-black text-blue-500">I</span>
+              <span class="text-xl font-bold">Interface Segregation</span>
+            </div>
+            <i class="fas fa-chevron-down text-slate-500 transition-transform duration-300"></i>
+          </button>
+          <div class="accordion-content">
+             <div class="p-6 border-t border-slate-700 space-y-6">
+              <div class="bg-slate-900/50 p-4 rounded-lg border-l-4 border-blue-500">
+                <p class="text-lg italic">"Los clientes no deben depender de interfaces que no usan."</p>
+              </div>
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div class="bg-slate-700/30 p-4 rounded-lg">
+                    <h4 class="font-bold text-indigo-400 mb-2">Profundización</h4>
+                     <p class="text-slate-300 text-sm">Mejor tener 3 interfaces pequeñas y específicas (Role Interfaces) que 1 interfaz gigante "Basurero" con 50 métodos.</p>
+                 </div>
+                 <div class="bg-slate-700/30 p-4 rounded-lg">
+                    <h4 class="font-bold text-amber-400 mb-2">Analogía: La Navaja Suiza</h4>
+                    <p class="text-slate-300 text-sm">Si solo necesitas cortar pan, no quieres cargar con una navaja que también tiene sacacorchos, lima y tijeras.</p>
+                 </div>
+              </div>
+
+               <div class="code-playground bg-[#0d1117] rounded-lg border border-slate-700 overflow-hidden">
+                <div class="flex border-b border-slate-700 bg-slate-800/50">
+                    <button class="tab-btn px-4 py-2 text-sm font-medium text-red-400 border-r border-slate-700 hover:bg-slate-800 active" onclick="switchTab(this, 'isp-bad')">❌ Interfaz Gorda</button>
+                   <button class="tab-btn px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-slate-800" onclick="switchTab(this, 'isp-good')">✅ Segregado</button>
+                </div>
+                 <div id="isp-bad" class="code-display active p-4 overflow-x-auto text-sm font-mono">
+<pre><span class="cmt">// ❌ PAQUETE: com.bloated.interfaces</span>
+<span class="cmt">// Este 'Dispositivo' obliga a implementar cosas que no tienes.</span>
+<span class="kwd">interface</span> <span class="cls">SmartDevice</span> {
+    <span class="kwd">void</span> <span class="mtd">print</span>();
+    <span class="kwd">void</span> <span class="mtd">fax</span>(); <span class="cmt">// ¿Quién usa fax hoy día?</span>
+    <span class="kwd">void</span> <span class="mtd">scan</span>();
+}
+
+<span class="kwd">class</span> <span class="cls">BasicPrinter</span> <span class="kwd">implements</span> <span class="cls">SmartDevice</span> {
+    <span class="kwd">public void</span> <span class="mtd">print</span>() { <span class="cmt">/* ok */</span> }
+    <span class="kwd">public void</span> <span class="mtd">fax</span>() { <span class="kwd">throw new</span> <span class="cls">Error</span>(<span class="str">"No tengo fax"</span>); } <span class="cmt">// Feo</span>
+}</pre>
+                </div>
+                <div id="isp-good" class="code-display p-4 overflow-x-auto text-sm font-mono">
+<pre><span class="cmt">// ✅ PAQUETE: com.clean.interfaces</span>
+<span class="cmt">// Interfaces pequeñas y específicas.</span>
+<span class="kwd">interface</span> <span class="cls">Printer</span> { <span class="kwd">void</span> <span class="mtd">print</span>(); }
+<span class="kwd">interface</span> <span class="cls">Scanner</span> { <span class="kwd">void</span> <span class="mtd">scan</span>(); }
+
+<span class="kwd">class</span> <span class="cls">BasicPrinter</span> <span class="kwd">implements</span> <span class="cls">Printer</span> {
+    <span class="kwd">public void</span> <span class="mtd">print</span>() { <span class="cmt">/* Imprime feliz */</span> }
+}
+
+<span class="kwd">class</span> <span class="cls">Photocopier</span> <span class="kwd">implements</span> <span class="cls">Printer</span>, <span class="cls">Scanner</span> { <span class="cmt">/* Hace ambos */</span> }</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIP -->
+        <div class="bg-slate-800 rounded-xl overflow-hidden border border-slate-700">
+           <button class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-700/50 transition-colors" onclick="toggleAccordion(this)">
+            <div class="flex items-center gap-4">
+              <span class="text-3xl font-black text-blue-500">D</span>
+              <span class="text-xl font-bold">Dependency Inversion</span>
+            </div>
+            <i class="fas fa-chevron-down text-slate-500 transition-transform duration-300"></i>
+          </button>
+          <div class="accordion-content">
+             <div class="p-6 border-t border-slate-700 space-y-6">
+              <div class="bg-slate-900/50 p-4 rounded-lg border-l-4 border-blue-500">
+                <p class="text-lg italic">"Depende de abstracciones, no de detalles."</p>
+              </div>
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div class="bg-slate-700/30 p-4 rounded-lg">
+                    <h4 class="font-bold text-indigo-400 mb-2">Profundización</h4>
+                    <p class="text-slate-300 text-sm">El módulo de alto nivel (Negocio) no debe importar al de bajo nivel (MySQL). Ambos deben importar una Interfaz (Puerto).</p>
+                 </div>
+                 <div class="bg-slate-700/30 p-4 rounded-lg">
+                    <h4 class="font-bold text-amber-400 mb-2">Analogía: La Lámpara</h4>
+                    <p class="text-slate-300 text-sm">No sueldas la lámpara directamente al cableado de la pared. Usas un enchufe estándar. Así puedes cambiar la lámpara sin romper la pared.</p>
+                 </div>
+              </div>
+              
+              <!-- Tip Box -->
+              <div class="bg-emerald-900/20 border border-emerald-500/30 p-4 rounded-lg flex gap-3">
+                <i class="fas fa-graduation-cap text-emerald-400 text-xl mt-1"></i>
+                <div>
+                  <h4 class="font-bold text-emerald-400">Tip Hexagonal</h4>
+                   <p class="text-sm text-emerald-100/80">Esta es la  base absoluta de la arquitectura Hexagonal (Puertos y Adaptadores).</p>
+                </div>
+              </div>
+
+               <div class="code-playground bg-[#0d1117] rounded-lg border border-slate-700 overflow-hidden">
+                <div class="flex border-b border-slate-700 bg-slate-800/50">
+                    <button class="tab-btn px-4 py-2 text-sm font-medium text-red-400 border-r border-slate-700 hover:bg-slate-800 active" onclick="switchTab(this, 'dip-bad')">❌ Hardcoded</button>
+                   <button class="tab-btn px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-slate-800" onclick="switchTab(this, 'dip-good')">✅ Inyección</button>
+                </div>
+                 <div id="dip-bad" class="code-display active p-4 overflow-x-auto text-sm font-mono">
+<pre><span class="cmt">// ❌ PAQUETE: com.tightly.coupled</span>
+<span class="kwd">import</span> com.infra.disk.FileLogger;
+
+<span class="kwd">public class</span> <span class="cls">AuditService</span> {
+    <span class="cmt">// Dependencia directa de una clase concreta (Bajo Nivel)</span>
+    <span class="cmt">// Si queremos cambiar a DatabaseLogger, ¡hay que romper esta clase!</span>
+    <span class="kwd">private</span> <span class="cls">FileLogger</span> logger = <span class="kwd">new</span> <span class="cls">FileLogger</span>();
+    
+    <span class="kwd">public void</span> <span class="mtd">audit</span>() {
+        logger.writeToFile(<span class="str">"Acción..."</span>);
+    }
+}</pre>
+                </div>
+                <div id="dip-good" class="code-display p-4 overflow-x-auto text-sm font-mono">
+<pre><span class="cmt">// ✅ PAQUETE: com.clean.dip</span>
+<span class="kwd">import</span> com.domain.ports.Logger;
+
+<span class="kwd">public class</span> <span class="cls">AuditService</span> {
+    <span class="kwd">private final</span> <span class="cls">Logger</span> logger;
+
+    <span class="cmt">// INYECCIÓN: Alguien más decide qué logger darme.</span>
+    <span class="kwd">public</span> <span class="mtd">AuditService</span>(<span class="cls">Logger</span> logger) {
+        <span class="kwd">this</span>.logger = logger;
+    }
+    
+    <span class="kwd">public void</span> <span class="mtd">audit</span>() {
+        logger.log(<span class="str">"Acción..."</span>); <span class="cmt">// No sé donde se guarda, ni me importa.</span>
+    }
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="flex justify-between items-center mt-12 py-8 border-t border-slate-800">
+        <a href="intro_interfaces.html" class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+          <i class="fas fa-arrow-left"></i> Anterior: Interfaces
+        </a>
+        <a href="patterns.html" class="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-bold transition-all transform hover:translate-x-1 shadow-lg shadow-blue-900/20">
+          Siguiente: Patrones
+          <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+        </a>
+      </div>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 py-8 mt-auto text-center text-slate-500 text-sm">
+      <p>Masterclass Arquitectura Java</p>
+    </footer>
+    <script src="app.js"></script>
+  </body>
+</html>

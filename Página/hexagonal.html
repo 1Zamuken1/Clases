@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hexagonal - Masterclass Arquitectura</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+            colors: {
+              brand: { dark: "#0f172a", card: "#1e293b", accent: "#3b82f6" },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .hex-diagram {
+        /* Simple CSS visual for Hexagon concept */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        padding: 2rem;
+      }
+      .circle-domain {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: #10b981; /* Emerald 500 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        color: white;
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        z-index: 10;
+        text-align: center;
+      }
+      .ring-app {
+        border: 2px dashed #3b82f6; /* Blue 500 */
+        padding: 2rem;
+        border-radius: 20px;
+        position: relative;
+      }
+      .adapter-box {
+        background: #1e293b;
+        border: 1px solid #475569;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        color: #94a3b8;
+      }
+      .code-display {
+        display: none;
+      }
+      .code-display.active {
+        display: block;
+      }
+      .kwd {
+        color: #ff7b72;
+      }
+      .cls {
+        color: #79c0ff;
+      }
+      .str {
+        color: #a5d6ff;
+      }
+      .mtd {
+        color: #d2a8ff;
+      }
+      .cmt {
+        color: #8b949e;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col"
+  >
+    <!-- Navbar -->
+    <nav
+      class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-700"
+    >
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-cube text-blue-500 text-xl"></i>
+            <span class="font-bold text-xl tracking-tight"
+              >Java Architecture</span
+            >
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a
+                href="intro_interfaces.html"
+                class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >0. Interfaces</a
+              >
+              <a
+                href="solid.html"
+                class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >1. SOLID</a
+              >
+              <a
+                href="patterns.html"
+                class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >2. Patrones</a
+              >
+              <a
+                href="hexagonal.html"
+                class="bg-slate-800 text-white px-3 py-2 rounded-md text-sm font-medium border border-blue-500/50"
+                >3. Hexagonal</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-5xl">
+      <!-- Learning Path -->
+      <div class="mb-12">
+        <div
+          class="flex flex-col md:flex-row justify-between items-center gap-4 relative"
+        >
+          <div
+            class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-slate-700 -z-10 transform -translate-y-1/2 rounded"
+          ></div>
+          <div
+            class="flex flex-col items-center bg-slate-900 px-4 z-10 opacity-50"
+          >
+            <div
+              class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center border-4 border-slate-900"
+            >
+              <span class="font-bold text-slate-400">0</span>
+            </div>
+            <div class="text-center mt-2">
+              <h3 class="font-semibold text-slate-300">Interfaces</h3>
+            </div>
+          </div>
+          <div
+            class="flex flex-col items-center bg-slate-900 px-4 z-10 opacity-50"
+          >
+            <div
+              class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center border-4 border-slate-900"
+            >
+              <span class="font-bold text-slate-400">1</span>
+            </div>
+            <div class="text-center mt-2">
+              <h3 class="font-semibold text-slate-300">SOLID</h3>
+            </div>
+          </div>
+          <div
+            class="flex flex-col items-center bg-slate-900 px-4 z-10 opacity-50"
+          >
+            <div
+              class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center border-4 border-slate-900"
+            >
+              <span class="font-bold text-slate-400">2</span>
+            </div>
+            <div class="text-center mt-2">
+              <h3 class="font-semibold text-slate-300">Patrones</h3>
+            </div>
+          </div>
+          <div class="flex flex-col items-center bg-slate-900 px-4 z-10">
+            <div
+              class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center border-4 border-slate-900 shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+            >
+              <span class="font-bold text-white">3</span>
+            </div>
+            <div class="text-center mt-2">
+              <h3 class="font-bold text-blue-400">Hexagonal</h3>
+              <p class="text-xs text-slate-400">El Destino Final</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <header class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">
+          Arquitectura Hexagonal
+        </h1>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+          También llamada
+          <span class="text-emerald-400 font-semibold">Ports & Adapters</span>.
+          El arte de aislar tu lógica de negocio del caos exterior.
+        </p>
+      </header>
+
+      <!-- Visual Concept -->
+      <div
+        class="bg-slate-800 rounded-xl border border-slate-700 p-8 shadow-2xl mb-12 flex flex-col md:flex-row items-center gap-12"
+      >
+        <div class="flex-1 space-y-4">
+          <h2 class="text-2xl font-bold text-slate-100 mb-4">
+            El Concepto Sagrado
+          </h2>
+          <div class="space-y-4">
+            <div class="flex gap-4">
+              <div
+                class="p-3 bg-emerald-500/10 rounded-lg h-min text-emerald-400"
+              >
+                <i class="fas fa-crown"></i>
+              </div>
+              <div>
+                <strong class="text-emerald-400">El Dominio es Rey:</strong>
+                <p class="text-slate-400 text-sm">
+                  Tu lógica de negocio (reglas, cálculos) NO debe saber nada de
+                  bases de datos, websockets o frameworks. Solo habla Java puro.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="p-3 bg-blue-500/10 rounded-lg h-min text-blue-400">
+                <i class="fas fa-random"></i>
+              </div>
+              <div>
+                <strong class="text-blue-400"
+                  >Inversión de Dependencias:</strong
+                >
+                <p class="text-slate-400 text-sm">
+                  En lugar de que el Dominio llame a la BD, definimos un
+                  <strong>Puerto</strong> (interfaz). La infraestructura
+                  implementa esa interfaz y se inyecta. El flujo de control va
+                  hacia afuera, pero la dependencia apunta hacia adentro.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CSS Diagram -->
+        <div class="flex-1 flex justify-center">
+          <div class="relative w-64 h-64 flex items-center justify-center">
+            <!-- Arrows coming in -->
+            <div
+              class="absolute -left-4 top-1/2 adapter-box transform -translate-y-1/2 -translate-x-full"
+            >
+              Controller (REST)
+            </div>
+            <i
+              class="absolute left-2 text-slate-500 fas fa-long-arrow-alt-right"
+            ></i>
+
+            <!-- Hexagon Border (conceptual) -->
+            <div
+              class="w-48 h-48 border-2 border-dashed border-slate-600 rounded-xl flex items-center justify-center rotate-45"
+            >
+              <div
+                class="w-full h-full flex items-center justify-center -rotate-45"
+              >
+                <!-- Core -->
+                <div
+                  class="w-24 h-24 bg-emerald-600 rounded-full flex flex-col items-center justify-center shadow-lg shadow-emerald-900/50 z-10 text-center"
+                >
+                  <i class="fas fa-brain text-white text-xl mb-1"></i>
+                  <span
+                    class="text-[10px] font-bold text-white uppercase tracking-wider"
+                    >Dominio</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Adapters out -->
+            <i
+              class="absolute right-2 text-slate-500 fas fa-long-arrow-alt-left"
+            ></i>
+            <!-- Points IN dependency wise -->
+            <div
+              class="absolute -right-4 top-1/2 adapter-box transform -translate-y-1/2 translate-x-full"
+            >
+              MySQL / PostgreSQL
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code Structure Deep Dive -->
+      <div class="space-y-4 mb-16">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+          <i class="fas fa-code-branch text-purple-400"></i> Estructura Real de
+          Paquetes
+        </h2>
+        <p class="text-slate-400">
+          Así es como se ve en un proyecto Spring Boot moderno. Nota la
+          separación estricta y el uso de <strong>MySQL</strong> como detalle de
+          implementación.
+        </p>
+
+        <!-- AQUI ESTABA EL ERROR: Faltaba la clase 'code-playground' para que app.js funcione -->
+        <div
+          class="code-playground bg-[#0d1117] rounded-xl border border-slate-700 overflow-hidden"
+        >
+          <!-- Tabs -->
+          <div class="flex border-b border-slate-700 bg-slate-800/50">
+            <button
+              class="tab-btn px-4 py-2 text-sm font-medium text-emerald-400 border-r border-slate-700 hover:bg-slate-800 active"
+              onclick="switchTab(this, 'hex-domain')"
+            >
+              1. DOMINIO (Puro)
+            </button>
+            <button
+              class="tab-btn px-4 py-2 text-sm font-medium text-blue-400 border-r border-slate-700 hover:bg-slate-800"
+              onclick="switchTab(this, 'hex-infra')"
+            >
+              2. INFRAESTRUCTURA
+            </button>
+            <button
+              class="tab-btn px-4 py-2 text-sm font-medium text-purple-400 hover:bg-slate-800"
+              onclick="switchTab(this, 'hex-config')"
+            >
+              3. CONFIGURACIÓN (Wiring)
+            </button>
+          </div>
+
+          <!-- Domain -->
+          <div
+            id="hex-domain"
+            class="code-display active p-6 overflow-x-auto text-sm font-mono"
+          >
+            <pre><span class="cmt">// 🚫 CERO anotaciones de Spring/SQL aquí. Solo Java.</span>
+<span class="kwd">package</span> com.myapp.domain;
+
+<span class="kwd">public record</span> <span class="cls">Order</span>(<span class="cls">UUID</span> id, <span class="cls">BigDecimal</span> total) {}
+
+<span class="cmt">// PUERTO DE SALIDA (Contrato: "Necesito guardar esto")</span>
+<span class="kwd">public interface</span> <span class="cls">OrderRepository</span> {
+    <span class="kwd">void</span> <span class="mtd">save</span>(<span class="cls">Order</span> order);
+}
+
+<span class="cmt">// CASO DE USO (Orquestador)</span>
+<span class="kwd">public class</span> <span class="cls">CreateOrderUseCase</span> {
+    <span class="kwd">private final</span> <span class="cls">OrderRepository</span> repository;
+    
+    <span class="kwd">public</span> <span class="mtd">CreateOrderUseCase</span>(<span class="cls">OrderRepository</span> repository) {
+        <span class="kwd">this</span>.repository = repository;
+    }
+    
+    <span class="kwd">public void</span> <span class="mtd">execute</span>(<span class="cls">Order</span> order) {
+        repository.save(order); <span class="cmt">// "No sé si es MySQL o un archivo, solo guardo"</span>
+    }
+}</pre>
+          </div>
+
+          <!-- Infra -->
+          <div
+            id="hex-infra"
+            class="code-display p-6 overflow-x-auto text-sm font-mono"
+          >
+            <pre><span class="cmt">// AQUÍ SÍ usamos MySQL y Spring Data</span>
+<span class="kwd">package</span> com.myapp.infra.persistence;
+<span class="kwd">import</span> org.springframework.stereotype.Component;
+
+<span class="cmt">// ADAPTADOR: Implementa el puerto usando MySQL real</span>
+<span class="kwd">@Component</span>
+<span class="kwd">class</span> <span class="cls">MysqlOrderAdapter</span> <span class="kwd">implements</span> <span class="cls">OrderRepository</span> {
+    
+    <span class="kwd">private final</span> <span class="cls">SpringJpaRepo</span> jpaRepo; 
+    
+    <span class="kwd">public</span> <span class="mtd">MysqlOrderAdapter</span>(<span class="cls">SpringJpaRepo</span> jpaRepo) {
+        <span class="kwd">this</span>.jpaRepo = jpaRepo;
+    }
+    
+    <span class="kwd">@Override</span>
+    <span class="kwd">public void</span> <span class="mtd">save</span>(<span class="cls">Order</span> order) {
+        <span class="cmt">// Transformamos el objeto de dominio limpio a una Entidad JPA sucia con @Table</span>
+        <span class="cls">OrderEntity</span> entity = toEntity(order);
+        jpaRepo.save(entity); 
+    }
+}</pre>
+          </div>
+
+          <!-- Config -->
+          <div
+            id="hex-config"
+            class="code-display p-6 overflow-x-auto text-sm font-mono"
+          >
+            <pre><span class="cmt">// EL PEGAMENTO: Inyección de Dependencias</span>
+<span class="kwd">package</span> com.myapp.config;
+<span class="kwd">import</span> org.springframework.context.annotation.*;
+
+<span class="kwd">@Configuration</span>
+<span class="kwd">public class</span> <span class="cls">DomainConfig</span> {
+
+    <span class="kwd">@Bean</span>
+    <span class="kwd">public</span> <span class="cls">CreateOrderUseCase</span> <span class="mtd">createOrderUseCase</span>(<span class="cls">OrderRepository</span> repo) {
+        <span class="cmt">// En runtime, Spring inyecta 'MysqlOrderAdapter' aquí</span>
+        <span class="kwd">return new</span> <span class="cls">CreateOrderUseCase</span>(repo);
+    }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next Steps Checklist -->
+      <div
+        class="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-8 mb-12"
+      >
+        <h3 class="text-xl font-bold text-white mb-4">
+          ¿Estás listo? Checklist final
+        </h3>
+        <ul class="space-y-3">
+          <li class="flex items-center gap-3 text-slate-300">
+            <i class="fas fa-check-circle text-emerald-500"></i>
+            <span
+              >¿Entiendes por qué <code>java.sql</code> es veneno en tu
+              Dominio?</span
+            >
+          </li>
+          <li class="flex items-center gap-3 text-slate-300">
+            <i class="fas fa-check-circle text-emerald-500"></i>
+            <span
+              >¿Sabes crear una <code>interface</code> para desacoplarte de la
+              BD?</span
+            >
+          </li>
+          <li class="flex items-center gap-3 text-slate-300">
+            <i class="fas fa-check-circle text-emerald-500"></i>
+            <span
+              >¿Ves el valor de tener clases "feas" de configuración
+              (Beans)?</span
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div
+        class="flex justify-between items-center mt-12 py-8 border-t border-slate-800"
+      >
+        <a
+          href="patterns.html"
+          class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+        >
+          <i class="fas fa-arrow-left"></i> Anterior: Patrones
+        </a>
+        <div class="text-slate-500 text-sm italic">
+          Has completado la ruta básica 🎉
+        </div>
+      </div>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
