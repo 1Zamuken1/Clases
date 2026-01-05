@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Diccionario interactivo de conceptos de programación. Explora definiciones clave desde Algoritmos hasta Z-index."
+    />
+    <meta
+      name="keywords"
+      content="programación, diccionario, desarrollo web, backend, frontend, devops, conceptos, SOLID, arquitectura"
+    />
+    <meta name="author" content="GastuApp Team" />
+    <title>Diccionario de Programación | Conceptos Clave</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="background-globes">
+      <div class="globe globe-1"></div>
+      <div class="globe globe-2"></div>
+      <div class="globe globe-3"></div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="glass-header">
+      <div class="container header-content">
+        <div class="logo">
+          <h1>Dev<span class="highlight">Diccionario</span></h1>
+        </div>
+
+        <nav class="main-nav">
+          <ul class="nav-list">
+            <li>
+              <a href="#" class="nav-link-btn active">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="nav-icon"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"
+                  />
+                </svg>
+                Diccionario
+              </a>
+            </li>
+            <li>
+              <a href="game.html" class="nav-link-btn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="nav-icon"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z"
+                  />
+                </svg>
+                Desafíos
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="search-container">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Buscar concepto (ej. API, Git)..."
+            aria-label="Buscar concepto"
+          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="search-icon"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+      <section class="intro text-center">
+        <h2>Domina el Lenguaje del Código</h2>
+        <p>
+          Una colección curada de términos esenciales para desarrolladores
+          modernos.
+        </p>
+      </section>
+
+      <!-- Filters Section -->
+      <div class="filters-wrapper">
+        <!-- Topic Filters -->
+        <div class="tags-row">
+          <span class="filter-label">Temas:</span>
+          <button class="tag-btn active" data-filter="all">Todos</button>
+          <button class="tag-btn theme-btn" data-filter="basic">Básicos</button>
+          <button class="tag-btn theme-btn" data-filter="solid">SOLID</button>
+          <button class="tag-btn theme-btn" data-filter="arquitectura">
+            Arquitectura
+          </button>
+          <button class="tag-btn theme-btn" data-filter="devops">DevOps</button>
+        </div>
+
+        <!-- Alphabet Filters -->
+        <div class="tags-row secondary">
+          <span class="filter-label">Índice:</span>
+          <button class="tag-btn" data-filter="A-E">A-E</button>
+          <button class="tag-btn" data-filter="F-J">F-J</button>
+          <button class="tag-btn" data-filter="K-O">K-O</button>
+          <button class="tag-btn" data-filter="P-T">P-T</button>
+          <button class="tag-btn" data-filter="U-Z">U-Z</button>
+        </div>
+      </div>
+
+      <div id="resultsCount" class="results-count">Cargando conceptos...</div>
+
+      <!-- Grid of Concepts -->
+      <div class="concepts-grid" id="conceptsGrid">
+        <!-- Content injected by main.js -->
+      </div>
+
+      <div id="noResults" class="no-results hidden">
+        <p>No encontramos conceptos que coincidan con tu búsqueda.</p>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-footer">
+      <div class="container text-center">
+        <p>
+          &copy; 2026 DevDiccionario. Hecho con
+          <span class="heart">❤</span> para desarrolladores.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Logic - Loaded Sequentially (No Modules to fix file:// local CORS) -->
+
+    <!-- 1. Data Sources -->
+    <script src="data/a-e.js"></script>
+    <script src="data/f-j.js"></script>
+    <script src="data/k-o.js"></script>
+    <script src="data/p-t.js"></script>
+    <script src="data/u-z.js"></script>
+
+    <!-- 2. Logic Modules -->
+    <script src="js/ui.js"></script>
+    <script src="js/filter.js"></script>
+
+    <!-- 3. Orchestrator -->
+    <script src="js/main.js"></script>
+  </body>
+</html>

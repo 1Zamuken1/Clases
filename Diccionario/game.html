@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevChallenge | Mini-Juegos de Programación</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="game.css" />
+  </head>
+  <body>
+    <div class="background-globes">
+      <div class="globe globe-1"></div>
+      <div class="globe globe-2"></div>
+      <div class="globe globe-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="glass-header">
+      <div class="container header-content">
+        <div class="logo">
+          <h1>Dev<span class="highlight">Challenge</span></h1>
+        </div>
+
+        <nav class="main-nav">
+          <ul class="nav-list">
+            <li>
+              <a href="index.html" class="nav-link-btn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="nav-icon"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"
+                  />
+                </svg>
+                Diccionario
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link-btn active">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="nav-icon"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z"
+                  />
+                </svg>
+                Desafíos
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container game-container">
+      <!-- Menu View -->
+      <section id="menuView" class="game-view">
+        <h2 class="section-title">Niveles de Campaña</h2>
+        <div class="level-grid" id="levelGrid">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+      <!-- Game View -->
+      <section id="gameView" class="game-view hidden">
+        <div class="game-hud">
+          <div class="hud-item">
+            <span class="hud-label">Nivel</span>
+            <span id="levelName" class="hud-value">...</span>
+          </div>
+          <div class="hud-item">
+            <span class="hud-label">Puntaje</span>
+            <span id="scoreValue" class="hud-value highlight">0</span>
+          </div>
+          <div class="hud-item">
+            <span class="hud-label">Tiempo</span>
+            <span id="timerValue" class="hud-value">60s</span>
+          </div>
+          <button id="exitBtn" class="hud-btn">Salir</button>
+        </div>
+
+        <!-- Game Board Area -->
+        <div id="gameBoard" class="game-board">
+          <!-- Content injected by Game Modes -->
+        </div>
+      </section>
+
+      <!-- Result View -->
+      <section id="resultView" class="game-view hidden">
+        <div class="result-card">
+          <h2 id="resultTitle">¡Nivel Completado!</h2>
+          <div class="score-display">
+            <span id="finalScore">0</span>
+            <span class="score-label">Puntos</span>
+          </div>
+          <p id="resultMessage">¡Impresionante dominio del código!</p>
+          <button id="restartBtn" class="action-btn">Jugar de Nuevo</button>
+          <button id="menuBtn" class="secondary-btn">Volver al Menú</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- 1. Data Sources -->
+    <script src="data/a-e.js"></script>
+    <script src="data/f-j.js"></script>
+    <script src="data/k-o.js"></script>
+    <script src="data/p-t.js"></script>
+    <script src="data/u-z.js"></script>
+
+    <!-- 2. Game Engine & Modes -->
+    <script src="js/game/engine.js"></script>
+    <script src="js/game/modes/quiz.js"></script>
+    <script src="js/game/modes/binary.js"></script>
+    <script src="js/game/modes/hangman.js"></script>
+    <script src="js/game/modes/match.js"></script>
+    <script src="js/game/modes/typing.js"></script>
+    <script src="js/game/modes/scramble.js"></script>
+    <script src="js/game/modes/flashcards.js"></script>
+    <script src="js/game/modes/memory.js"></script>
+    <script src="js/game/modes/oddoneout.js"></script>
+    <script src="js/game/modes/wordsearch.js"></script>
+    <script src="js/game/modes/sorter.js"></script>
+    <script src="js/game/modes/sequence.js"></script>
+
+    <!-- 3. Init -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        if (window.GameEngine) window.GameEngine.init();
+      });
+    </script>
+  </body>
+</html>
